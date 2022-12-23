@@ -34,7 +34,7 @@ AddEventHandler('ClaimEvent', function(src)
             while (not HasModelLoaded(GetHashKey(PedModel))) do
                 Wait(1)
             end
-            Ped = CreatePed(1, PedHash, SmallCenter.x, SmallCenter.y, Zones.z - 1, false, true)
+            Ped = CreatePed(1, PedHash, SmallCenter.x, SmallCenter.y, Zones.z - 1, 0, false, true)
             SetEntityInvincible(Ped, true)
             SetBlockingOfNonTemporaryEvents(Ped, true)
             FreezeEntityPosition(Ped, true)
@@ -79,13 +79,6 @@ AddEventHandler('ClaimEvent', function(src)
 
 
         -- display
-        -- function ShowFloatingHelpNotification(msg, coords)
-        --     if FlMsgLck then
-        --         if GetLabelText('MessageText') == 'NULL' then
-        --             AddTextEntry('MessageText', msg)
-        --             FlMsgLck = true
-        --         end
-        --     end
             function ShowFloatingHelpNotification(msg, coords)
             AddTextEntry('MessageText', msg)
             SetFloatingHelpTextWorldPosition(1, coords.x, coords.y, coords.z)
@@ -95,13 +88,13 @@ AddEventHandler('ClaimEvent', function(src)
         end
 
         CreateThread(function(coords)
-            if Config.Message.Show then
+            if Config.FloatingHelpText.Show then
                 if not FlMsgLck then
                     FlMsgLck = true
                     while true do
-                        Wait(Config.Message.RefreshTime)
+                        Wait(Config.FloatingHelpText.RefreshTime)
                         coords = vec3(SmallCenter.x, SmallCenter.y, Zones.z + 1)
-                        ShowFloatingHelpNotification(Config.Message.Label, coords)
+                        ShowFloatingHelpNotification(Config.FloatingHelpText.Label, coords)
                     end
                 end
             end
