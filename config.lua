@@ -50,11 +50,8 @@ Config.Notify = {
     }
 }
 
--- Optional (experimental! exspect bugs.)
-
-Config.FloatingHelpText = {
+Config.FloatingMessage = {
     Show = true,
-    RefreshTime = 50, -- decreasing this Number looks better but will impact the performance of the script. Standard: 50; Good Looking: 10;
     Label = "This is a funny test message!"
-    -- Label = '~g~Press  ~INPUT_CONTEXT~~g~to claim the Land!'
+    --Label = '~g~Press  ~INPUT_CONTEXT~~g~to claim the Land!'
 }

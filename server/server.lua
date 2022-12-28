@@ -7,7 +7,7 @@ end)
 
 QBCore.Functions.CreateCallback('sendnudes', function(source, cb)
     local Player = QBCore.Functions.GetPlayer(source)
-    local gang = Player.PlayerData.gang.name
+    local gang = Player.PlayerData.gang.label
     print(gang)
     cb(true, gang) -- tell the client that he can do stuff
 end)

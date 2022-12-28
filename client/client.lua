@@ -23,7 +23,6 @@ AddEventHandler('ClaimEvent', function(source)
         local SmallCenter = circleSmall:getCenter()
         ComboZone:Create({ circleBig, circleSmall }, { name = "comboZone", debugPoly = Config.Zones.Debug })
 
-
         -- ped
         local Ped
         local PedModel = Config.Ped.Model
@@ -39,6 +38,7 @@ AddEventHandler('ClaimEvent', function(source)
             SetBlockingOfNonTemporaryEvents(Ped, true)
             FreezeEntityPosition(Ped, true)
 
+            -- blip
             local blip = AddBlipForCoord(SmallCenter.x, SmallCenter.y, Zones.z)
             SetBlipSprite(blip, Config.Blips.Blip.Sprite)
             SetBlipDisplay(blip, 4)
@@ -78,30 +78,34 @@ AddEventHandler('ClaimEvent', function(source)
             end
         end)
 
-
         -- display
-        function ShowFloatingHelpNotification(msg, coords)
-            AddTextEntry('MessageText', msg)
-            SetFloatingHelpTextWorldPosition(1, coords.x, coords.y, coords.z)
-            SetFloatingHelpTextStyle(1, 1, 2, -1, 3, 0)
-            BeginTextCommandDisplayHelp('MessageText')
-            EndTextCommandDisplayHelp(2, false, false, -1)
+        local function DrawText3D(x, y, z, text)
+            SetTextScale(0.35, 0.35)
+            SetTextFont(4)
+            SetTextProportional(true)
+            SetTextColour(255, 255, 255, 215)
+            SetTextEntry("STRING")
+            SetTextCentre(true)
+            AddTextComponentString(text)
+            SetDrawOrigin(x, y, z, 0)
+            DrawText(0.0, 0.0)
+            local factor = (string.len(text)) / 370
+            DrawRect(0.0, 0.0 + 0.0125, 0.017 + factor, 0.03, 0, 0, 0, 75)
+            ClearDrawOrigin()
         end
 
         CreateThread(function(coords)
-            if Config.FloatingHelpText.Show then
+            if Config.FloatingMessage.Show then
+                coords = vec3(SmallCenter.x, SmallCenter.y, Zones.z + 1)
                 if not FlMsgLck then
                     FlMsgLck = true
-                    local npc = GetEntityCoords(Ped)
-                    local pl = GetEntityCoords(PlayerPedId())
-                    if (#(pl - npc) < 3) then --FIX
-                        print("ss")
-                        while true do
-                            print("1")
-                            Wait(Config.FloatingHelpText.RefreshTime)
-                            coords = vec3(SmallCenter.x, SmallCenter.y, Zones.z + 1)
-                            ShowFloatingHelpNotification(Config.FloatingHelpText.Label, coords)
+                    while true do
+                        local npc = GetEntityCoords(Ped)
+                        local pl = GetEntityCoords(PlayerPedId())
+                        if #(pl - npc) <= 2 then
+                            DrawText3D(coords.x, coords.y, coords.z, Config.FloatingMessage.Label)
                         end
+                        Wait(5)
                     end
                 end
             end
@@ -130,7 +134,7 @@ AddEventHandler('ClaimEvent', function(source)
                 QBCore.Functions.TriggerCallback('sendnudes', function(returnValue, gang)
                     if returnValue then
                         print(gang)
-                        TriggerEvent('chatMessage', "", {0, 128, 255}, gang.." claimed the land!")
+                        TriggerEvent('chatMessage', "", { 0, 128, 255 }, gang .. " claimed the land!")
                     end
                 end)
                 Deletion()
