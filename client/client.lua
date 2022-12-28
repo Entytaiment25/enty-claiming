@@ -40,7 +40,6 @@ AddEventHandler('ClaimEvent', function(src)
             FreezeEntityPosition(Ped, true)
 
             local blip = AddBlipForCoord(SmallCenter.x, SmallCenter.y, Zones.z)
-            SetBlipAlpha(blip, Config.Blips.Blip.Alpha)
             SetBlipSprite(blip, Config.Blips.Blip.Sprite)
             SetBlipDisplay(blip, 4)
             SetBlipScale(blip, Config.Blips.Blip.Scale)
@@ -49,11 +48,13 @@ AddEventHandler('ClaimEvent', function(src)
             BeginTextCommandSetBlipName("STRING")
             AddTextComponentString(Config.Blips.Blip.Name)
             EndTextCommandSetBlipName(blip)
+            SetBlipPriority(blip, 1.0)
 
             local radius = AddBlipForRadius(SmallCenter.x, SmallCenter.y, Zones.z, Config.Zones.Radius.BigCircle * 5)
             SetBlipAlpha(radius, Config.Blips.Radius.Alpha)
             SetBlipRotation(radius, 0)
             SetBlipColour(radius, Config.Blips.Radius.Color)
+            SetBlipPriority(radius, 0.0)
         end)
         -- zone
         local function someMath()
@@ -79,7 +80,7 @@ AddEventHandler('ClaimEvent', function(src)
 
 
         -- display
-            function ShowFloatingHelpNotification(msg, coords)
+        function ShowFloatingHelpNotification(msg, coords)
             AddTextEntry('MessageText', msg)
             SetFloatingHelpTextWorldPosition(1, coords.x, coords.y, coords.z)
             SetFloatingHelpTextStyle(1, 1, 2, -1, 3, 0)
@@ -91,10 +92,16 @@ AddEventHandler('ClaimEvent', function(src)
             if Config.FloatingHelpText.Show then
                 if not FlMsgLck then
                     FlMsgLck = true
-                    while true do
-                        Wait(Config.FloatingHelpText.RefreshTime)
-                        coords = vec3(SmallCenter.x, SmallCenter.y, Zones.z + 1)
-                        ShowFloatingHelpNotification(Config.FloatingHelpText.Label, coords)
+                    local npc = GetEntityCoords(Ped)
+                    local pl = GetEntityCoords(PlayerPedId())
+                    if (#(pl - npc) < 3) then --FIX
+                        print("ss")
+                        while true do
+                            print("1")
+                            Wait(Config.FloatingHelpText.RefreshTime)
+                            coords = vec3(SmallCenter.x, SmallCenter.y, Zones.z + 1)
+                            ShowFloatingHelpNotification(Config.FloatingHelpText.Label, coords)
+                        end
                     end
                 end
             end
@@ -110,6 +117,8 @@ AddEventHandler('ClaimEvent', function(src)
             FlMsgLck = false
             ClearFloatingHelp(1, true)
             EndTextCommandDisplayHelp(2, false, false, -1)
+            RemoveBlip(blip)
+            RemoveBlip(radius)
         end
 
         --https://cookbook.fivem.net/2020/01/06/using-the-new-console-key-bindings/
@@ -118,9 +127,7 @@ AddEventHandler('ClaimEvent', function(src)
             if switch then
                 TriggerEvent(Config.Notify.Win.Event, Config.Notify.Win.Text, Config.Notify.Win.Type,
                     Config.Notify.Win.Time)
-                local Player = QBCore.Functions.GetPlayer(src)
-                local job = Player.PlayerData.job.name
-                TriggerEvent("chatMessage", "", { 255, 0, 0 }, job)
+                TriggerEvent("chatMessage", "", { 255, 0, 0 }, "s")
                 Deletion()
             end
         end, false)

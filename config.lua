@@ -11,7 +11,7 @@ Config.Ped = {
 } -- Hash numbers for ped model
 
 Config.Zones = {
-    Debug = false,
+    Debug = true,
     Coords = {
         vec3(733.99, 1283.96, 360.3),
         vec3(731.1, 1299.64, 360.3)
@@ -27,7 +27,6 @@ Config.Blips = {
         Name = "Claim",
         Sprite = 437,
         Scale = 0.9,
-        Alpha = 100,
         Color = 0
     },
     Radius = {
