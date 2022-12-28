@@ -3,7 +3,7 @@ local switch = false
 local locked = false
 local FlMsgLck = false
 RegisterNetEvent('ClaimEvent')
-AddEventHandler('ClaimEvent', function(src)
+AddEventHandler('ClaimEvent', function(source)
     if not locked then
         locked = true
         -- zone
@@ -127,10 +127,16 @@ AddEventHandler('ClaimEvent', function(src)
             if switch then
                 TriggerEvent(Config.Notify.Win.Event, Config.Notify.Win.Text, Config.Notify.Win.Type,
                     Config.Notify.Win.Time)
-                TriggerEvent("chatMessage", "", { 255, 0, 0 }, "s")
+                QBCore.Functions.TriggerCallback('sendnudes', function(returnValue, gang)
+                    if returnValue then
+                        print(gang)
+                        TriggerEvent('chatMessage', "", {0, 128, 255}, gang.." claimed the land!")
+                    end
+                end)
                 Deletion()
             end
         end, false)
+
         -- when switch is true and someone press the E key will throw the event
         RegisterKeyMapping('+EntyGenius', 'Interaction', 'keyboard', 'e')
 
@@ -138,7 +144,6 @@ AddEventHandler('ClaimEvent', function(src)
             if (GetCurrentResourceName() ~= resourceName) then
                 return
             end
-            print('The resource ' .. resourceName .. ' was stopped.')
             Deletion()
         end)
     elseif locked then
