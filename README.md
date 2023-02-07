@@ -1,1 +1,1 @@
-# This Project isn't finished and I would not recommend it using it yet because it is for now useless! :D
+# This Project is now only used for Snippets. This is not a working Script :P
